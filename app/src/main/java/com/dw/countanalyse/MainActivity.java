@@ -3,8 +3,13 @@ package com.dw.countanalyse;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -44,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnKey8.setOnClickListener(this);
         Button btnKey9 = findViewById(R.id.btnKey9);
         btnKey9.setOnClickListener(this);
+        Button btnEnter = findViewById(R.id.btnEnter);
+        btnEnter.setOnClickListener(this);
         tvShowCount = findViewById(R.id.tvShowCount);
         tvShowCount.setOnClickListener(this);
 
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (v.getId() == R.id.btnEnter) {
             int count = Integer.parseInt(tvShowCount.getText().toString());
+            Log.i("count", count+ "");
             if (count == 0) {
                 return;
             }
@@ -78,14 +86,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.analyse:
+                Intent intent = new Intent(MainActivity.this, AnalyseActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void recordCount(int count) {
-        Record record = new Record();
+        final Record record = new Record();
         record.times = count;
         Date now = new Date();
         record.date = dateFormat.format(now);
         record.time = timeFormat.format(now);
         record.sync = false;
-        db.recordDAO().insertRecord(record);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.recordDAO().insertRecord(record);
+            }
+        });
+        t.start();
+
     }
 
     private String getName(int id) {
