@@ -1,6 +1,7 @@
 package com.dw.countanalyse;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -8,8 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.dw.countanalyse.entity.Record;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     TextView tvShowCount;
+    AppDatabase db;
+    SimpleDateFormat dateFormat;
+    SimpleDateFormat timeFormat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +46,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnKey9.setOnClickListener(this);
         tvShowCount = findViewById(R.id.tvShowCount);
         tvShowCount.setOnClickListener(this);
+
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "record-db").build();
+
+        dateFormat = new SimpleDateFormat("yyyyMMdd");
+        timeFormat = new SimpleDateFormat("HHmmss");
     }
 
     @Override
@@ -54,8 +69,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         if (v.getId() == R.id.btnEnter) {
-
+            int count = Integer.parseInt(tvShowCount.getText().toString());
+            if (count == 0) {
+                return;
+            }
+            recordCount(count);
+            tvShowCount.setText("0");
         }
+    }
+
+    private void recordCount(int count) {
+        Record record = new Record();
+        record.times = count;
+        Date now = new Date();
+        record.date = dateFormat.format(now);
+        record.time = timeFormat.format(now);
+        record.sync = false;
+        db.recordDAO().insertRecord(record);
     }
 
     private String getName(int id) {
