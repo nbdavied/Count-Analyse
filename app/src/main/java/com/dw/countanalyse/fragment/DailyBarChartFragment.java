@@ -2,6 +2,7 @@ package com.dw.countanalyse.fragment;
 
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 
@@ -17,12 +18,16 @@ import com.db.williamchart.view.BarChartView;
 import com.dw.countanalyse.AppDatabase;
 import com.dw.countanalyse.R;
 import com.dw.countanalyse.entity.Record;
+import com.dw.countanalyse.entity.TimesCount;
+import com.dw.countanalyse.util.DateUtil;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -79,8 +84,8 @@ public class DailyBarChartFragment extends Fragment {
         Thread t = new Thread(){
             @Override
             public void run() {
-
-                List<Record> records = db.recordDAO().queryRecordBetweenDate("20210101", "20991231");
+                Date now = new Date();
+                List<TimesCount> records = db.recordDAO().queryTimesCount(DateUtil.getDate(now));
                 Message m = handler.obtainMessage();
                 m.obj = records;
                 handler.sendMessage(m);
@@ -93,20 +98,21 @@ public class DailyBarChartFragment extends Fragment {
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            List<Record> records = (List<Record>) msg.obj;
-            setData(records);
+            List<TimesCount> timesCounts = (List<TimesCount>) msg.obj;
+            setData(timesCounts);
         }
     };
 
-    private void setData(List<Record> records) {
+    private void setData(List<TimesCount> timesCounts) {
         List<BarEntry> values = new ArrayList<>();
-        for (Record r : records) {
-            Log.d("times", r.times + "");
-            values.add(new BarEntry((float) r.id, (float) r.times));
+        for (TimesCount tc : timesCounts) {
+            values.add(new BarEntry((float) tc.times, (float) tc.count));
         }
         BarDataSet set = new BarDataSet(values, "today");
+        set.setDrawIcons(false);
         BarData data = new BarData(set);
         chart.setData(data);
+        chart.getData().notifyDataChanged();
         chart.notifyDataSetChanged();
     }
 }
