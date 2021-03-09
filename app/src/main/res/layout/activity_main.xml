@@ -13,6 +13,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         android:textSize="200sp"
+        android:textColor="@color/colorPrimary"
         android:id="@+id/tvShowCount"
     />
     <LinearLayout

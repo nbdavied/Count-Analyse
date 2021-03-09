@@ -5,14 +5,22 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.DailyBarChartFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-    <com.github.mikephil.charting.charts.BarChart
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:id="@+id/dailyBarChart"/>
+        android:layout_height="match_parent">
+        <com.github.mikephil.charting.charts.BarChart
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:id="@+id/dailyBarChart"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDatePicker"
+            android:text="选择日期"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_below="@id/dailyBarChart"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="150dp"
+            />
+    </RelativeLayout>
 </FrameLayout>
