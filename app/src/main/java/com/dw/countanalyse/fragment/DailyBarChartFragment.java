@@ -8,6 +8,7 @@ import androidx.room.Room;
 
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import com.db.williamchart.data.Frame;
 import com.db.williamchart.view.BarChartView;
 import com.dw.countanalyse.AppDatabase;
+import com.dw.countanalyse.DatabaseInstance;
 import com.dw.countanalyse.R;
 import com.dw.countanalyse.entity.Record;
 import com.dw.countanalyse.entity.TimesCount;
@@ -82,8 +84,7 @@ public class DailyBarChartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_daily_bar_chart, container, false);
-        db = Room.databaseBuilder(getContext(),
-                AppDatabase.class, "record-db").build();
+        db = DatabaseInstance.getDb();
         chart = root.findViewById(R.id.dailyBarChart);
         chart.setDrawBarShadow(false);
         chart.setDrawValueAboveBar(true);

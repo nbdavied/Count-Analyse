@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,8 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvTodayMax = findViewById(R.id.tvTodayMax);
         tvTodayCount = findViewById(R.id.tvCountToday);
 
-        db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "record-db").build();
+        db = DatabaseInstance.getDb();
         countData();
     }
 
