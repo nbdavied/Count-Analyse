@@ -19,4 +19,14 @@ public interface RecordDAO {
 
     @Query("select times, count(*) as count from record where date = :date group by times")
     List<TimesCount> queryTimesCount(String date);
+
+    @Query("select max(times) from record where date = :date")
+    int queryMaxByDate(String date);
+
+    @Query("select max(times) from record")
+    int queryMax();
+
+    @Query("select sum(times) from record where times >= :min and date = :date")
+    int querySumOfDateAboveMin(int min, String date);
+
 }
