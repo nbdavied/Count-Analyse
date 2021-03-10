@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.dw.countanalyse.R;
 import com.dw.countanalyse.fragment.DailyBarChartFragment;
+import com.dw.countanalyse.fragment.DailyLineChartFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -18,7 +19,7 @@ import com.dw.countanalyse.fragment.DailyBarChartFragment;
 public class AnalysePagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.daily_bar_chart, R.string.tab_text_1, R.string.tab_text_2};
+    private static final int[] TAB_TITLES = new int[]{R.string.single_day_statistic, R.string.daily_statistic, R.string.monthly_statistic};
     private final Context mContext;
 
     public AnalysePagerAdapter(Context context, FragmentManager fm) {
@@ -31,6 +32,8 @@ public class AnalysePagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 return DailyBarChartFragment.newInstance();
+            case 1:
+                return DailyLineChartFragment.newInstance();
             default:
                 return PlaceholderFragment.newInstance(position + 1);
         }

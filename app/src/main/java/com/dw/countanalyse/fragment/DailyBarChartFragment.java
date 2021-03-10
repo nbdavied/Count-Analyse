@@ -153,6 +153,7 @@ public class DailyBarChartFragment extends Fragment {
         chart.setData(data);
         chart.getData().notifyDataChanged();
         chart.notifyDataSetChanged();
+        chart.invalidate();
     }
 
     private void initSettings() {

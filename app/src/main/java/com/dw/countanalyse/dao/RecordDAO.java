@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.dw.countanalyse.entity.DailyStatistic;
 import com.dw.countanalyse.entity.Record;
 import com.dw.countanalyse.entity.TimesCount;
 
@@ -29,4 +30,8 @@ public interface RecordDAO {
     @Query("select sum(times) from record where times >= :min and date = :date")
     int querySumOfDateAboveMin(int min, String date);
 
+    @Query("select avg(times) as avg, max(times) as max, count(times) as countTimes, date " +
+            "from record " +
+            "where date between :startDate and :endDate group by date order by date asc")
+    List<DailyStatistic> queryDailyStatistic(String startDate, String endDate);
 }

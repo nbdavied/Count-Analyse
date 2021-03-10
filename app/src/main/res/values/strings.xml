@@ -16,5 +16,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="daily_bar_chart">每日统计</string>
+    <string name="single_day_statistic">单日统计</string>
+    <string name="daily_statistic">日统计</string>
+    <string name="monthly_statistic">月统计</string>
 </resources>
