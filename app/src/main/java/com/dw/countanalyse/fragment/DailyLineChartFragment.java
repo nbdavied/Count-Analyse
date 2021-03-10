@@ -1,16 +1,20 @@
 package com.dw.countanalyse.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.AttrRes;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcel;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.dw.countanalyse.AppDatabase;
 import com.dw.countanalyse.CountAnalyseApplication;
@@ -25,6 +29,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,6 +46,8 @@ public class DailyLineChartFragment extends Fragment {
 
     private AppDatabase db;
     private LineChart chart;
+    private Button btnDatePicker;
+    private Pair<Long, Long> dateSelection;
 
 
     public DailyLineChartFragment() {
@@ -69,25 +77,63 @@ public class DailyLineChartFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_daily_line_chart, container, false);
         chart = root.findViewById(R.id.dailyLineChart);
+        btnDatePicker = root.findViewById(R.id.btnLineChartDatePicker);
         db = DatabaseInstance.getDb();
+        initSettings();
         initChart();
         initChartData();
+        btnDatePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MaterialDatePicker.Builder<?> builder =setupDateSelectorBuilder();
+                //builder.setTheme(resolveOrThrow(getContext(), R.attr.materialCalendarTheme));
+                MaterialDatePicker<?> picker = builder.build();
+                addDatePickerListener(picker);
+                picker.show(getChildFragmentManager(), picker.toString());
+            }
+        });
         return root;
+    }
+
+    private MaterialDatePicker.Builder<?> setupDateSelectorBuilder() {
+        MaterialDatePicker.Builder<Pair<Long, Long>> builder =
+                MaterialDatePicker.Builder.dateRangePicker();
+        builder.setSelection(dateSelection);
+        return builder;
+    }
+
+    private void addDatePickerListener(MaterialDatePicker<?> picker) {
+        picker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Object>() {
+            @Override
+            public void onPositiveButtonClick( Object selection) {
+                dateSelection = (Pair<Long, Long>) selection;
+                getChartData();
+            }
+        });
+    }
+
+    private void initSettings() {
+        long now = System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.roll(Calendar.MONTH, -1);
+        dateSelection = new Pair<>(calendar.getTimeInMillis(), now);
     }
 
     private void initChart() {
         chart.setPinchZoom(false);
         chart.setDrawGridBackground(false);
+        chart.getDescription().setEnabled(false);
     }
 
     private void initChartData(){
         long today = System.currentTimeMillis();
         Calendar calendar = Calendar.getInstance();
         calendar.roll(Calendar.MONTH, -1);
-        long lastMonth = calendar.getTimeInMillis();
-        getChartData(DateUtil.getDate(calendar.getTime()), DateUtil.getDate(new Date(today)));
+        getChartData();
     }
-    private void getChartData(final String startDate, final String endDate) {
+    private void getChartData() {
+        final String startDate = DateUtil.getDate(new Date(dateSelection.first));
+        final String endDate = DateUtil.getDate(new Date(dateSelection.second));
         Log.d("dateRange", startDate + "-" + endDate);
         new Thread(){
             @Override
@@ -114,6 +160,10 @@ public class DailyLineChartFragment extends Fragment {
         ValueFormatter xValueFormatter = new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, AxisBase axis) {
+                int index = (int)value;
+                if (index < 0 || index >= dailyStatistics.size()) {
+                    return "";
+                }
                 return dailyStatistics.get((int)value).date;
             }
         };
@@ -142,5 +192,13 @@ public class DailyLineChartFragment extends Fragment {
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(xValueFormatter);
         chart.invalidate();
+    }
+
+    private static int resolveOrThrow(Context context, @AttrRes int attributeResId) {
+        TypedValue typedValue = new TypedValue();
+        if (context.getTheme().resolveAttribute(attributeResId, typedValue, true)) {
+            return typedValue.data;
+        }
+        throw new IllegalArgumentException(context.getResources().getResourceName(attributeResId));
     }
 }

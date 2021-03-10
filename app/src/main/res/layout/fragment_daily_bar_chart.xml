@@ -11,6 +11,7 @@
         <com.github.mikephil.charting.charts.BarChart
             android:layout_width="match_parent"
             android:layout_height="400dp"
+            android:layout_marginTop="50dp"
             android:id="@+id/dailyBarChart"/>
         <Button
             android:layout_width="wrap_content"
@@ -20,7 +21,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_below="@id/dailyBarChart"
             android:layout_centerInParent="true"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="100dp"
             />
     </RelativeLayout>
 </FrameLayout>

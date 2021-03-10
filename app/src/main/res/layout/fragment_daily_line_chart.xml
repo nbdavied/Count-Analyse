@@ -12,16 +12,17 @@
         <com.github.mikephil.charting.charts.LineChart
             android:layout_width="match_parent"
             android:layout_height="400dp"
+            android:layout_marginTop="50dp"
             android:id="@+id/dailyLineChart"/>
         <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnDatePicker"
+        android:id="@+id/btnLineChartDatePicker"
         android:text="选择日期"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_below="@id/dailyLineChart"
         android:layout_centerInParent="true"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         />
     </RelativeLayout>
 
