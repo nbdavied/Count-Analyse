@@ -24,6 +24,9 @@ public interface RecordDAO {
     @Query("select max(times) from record where date = :date")
     int queryMaxByDate(String date);
 
+    @Query("select avg(times) from record where date = :date")
+    float queryAvgByDate(String date);
+
     @Query("select max(times) from record")
     int queryMax();
 
@@ -34,4 +37,10 @@ public interface RecordDAO {
             "from record " +
             "where date between :startDate and :endDate group by date order by date asc")
     List<DailyStatistic> queryDailyStatistic(String startDate, String endDate);
+
+    @Query("select avg(times) as avg, max(times) as max, count(times) as countTimes, " +
+            "substr(date, 1,6) as date from record " +
+            "where substr(date, 1, 6) between :startMonth and :endMonth group by substr(date,1,6) " +
+            "order by date asc")
+    List<DailyStatistic> queryMonthlyStatistic(String startMonth, String endMonth);
 }

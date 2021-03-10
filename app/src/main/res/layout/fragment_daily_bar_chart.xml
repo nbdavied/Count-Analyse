@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.DailyBarChartFragment">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnDatePicker"
-            android:text="选择日期"
+            android:text="@string/select_date"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_below="@id/dailyBarChart"
             android:layout_centerInParent="true"

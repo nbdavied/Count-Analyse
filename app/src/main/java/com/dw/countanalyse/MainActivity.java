@@ -26,10 +26,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final static String MAX = "max";
     private final static String TODAY_MAX = "todayMax";
     private final static String TODAY_COUNT = "todayCount";
+    private static final String TODAY_AVG = "todayAvg";
     TextView tvShowCount;
     TextView tvMax;
     TextView tvTodayMax;
     TextView tvTodayCount;
+    TextView tvTodayAvg;
     AppDatabase db;
 
     @Override
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvMax = findViewById(R.id.tvMax);
         tvTodayMax = findViewById(R.id.tvTodayMax);
         tvTodayCount = findViewById(R.id.tvCountToday);
-
+        tvTodayAvg = findViewById(R.id.tvTodayAvg);
         db = DatabaseInstance.getDb();
         countData();
     }
@@ -145,11 +147,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String today = DateUtil.getDate(new Date());
                 int todayMax = db.recordDAO().queryMaxByDate(today);
                 int todayCount = db.recordDAO().querySumOfDateAboveMin(10, today);
+                float todayAvg = db.recordDAO().queryAvgByDate(today);
                 Message msg = handler.obtainMessage();
                 Bundle bundle = new Bundle();
                 bundle.putInt(MAX, max);
                 bundle.putInt(TODAY_MAX, todayMax);
                 bundle.putInt(TODAY_COUNT, todayCount);
+                bundle.putFloat(TODAY_AVG, todayAvg);
                 msg.setData(bundle);
                 handler.sendMessage(msg);
             }
@@ -163,9 +167,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int max = bundle.getInt(MAX);
             int todayMax = bundle.getInt(TODAY_MAX);
             int todayCount = bundle.getInt(TODAY_COUNT);
+            float todayAvg = bundle.getFloat(TODAY_AVG);
             tvMax.setText(String.valueOf(max));
             tvTodayMax.setText(String.valueOf(todayMax));
             tvTodayCount.setText(String.valueOf(todayCount));
+            tvTodayAvg.setText(String.format("%.2f", todayAvg));
         }
     };
 }
